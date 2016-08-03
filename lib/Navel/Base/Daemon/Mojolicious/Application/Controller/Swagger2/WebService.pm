@@ -17,7 +17,7 @@ sub list_webservices {
     my ($controller, $arguments, $callback) = @_;
 
     $controller->$callback(
-        $controller->daemon()->{webservices}->name(),
+        $controller->daemon()->{webservices}->all_by_property_name('name'),
         200
     );
 }
