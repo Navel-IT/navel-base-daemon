@@ -8,7 +8,7 @@
 use strict;
 use warnings;
 
-use ExtUtils::MakeMaker 6.64;
+use ExtUtils::MakeMaker;
 
 #-> main
 
@@ -41,6 +41,9 @@ WriteMakefile(
         'Sys::Hostname' => 0,
         'Mojolicious' => 0,
         'AnyEvent' => 0
+    },
+    CONFIGURE_REQUIRES => {
+        'ExtUtils::MakeMaker' => 6.64
     },
     TEST_REQUIRES => {
         'Test::More' => 0
