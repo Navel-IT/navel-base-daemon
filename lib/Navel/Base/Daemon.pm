@@ -13,7 +13,6 @@ use Getopt::Long::Descriptive;
 
 use Sys::Hostname;
 
-use Navel::Definition::WebService::Parser;
 use Navel::Logger;
 use Navel::Logger::Message;
 use Navel::Utils qw/
@@ -93,8 +92,11 @@ sub run {
         ],
         [],
         [
-            'no-web-services',
-            'disable the web services'
+            'webservice-listener=s@',
+            'one or more locations to listen on',
+            {
+                default => []
+            }
         ],
         [],
         [
@@ -188,7 +190,7 @@ sub run {
         $class->new(
             logger => $logger,
             meta_configuration_file_path => $meta_configuration_file_path,
-            enable_webservices => ! $options->no_web_services() && ! $options->validate_configuration()
+            webservice_listeners => $options->webservice_listener()
         );
     };
 
@@ -235,10 +237,6 @@ sub new {
         file_path => $self->{meta_configuration_file_path}
     );
 
-    $self->{webservices} = Navel::Definition::WebService::Parser->new()->read(
-        file_path => $options{meta}->{definition}->{webservices}->{definitions_from_file}
-    )->make();
-
     my $load_class_error = try_require_namespace($options{core_class});
 
     croak($load_class_error) if $load_class_error;
@@ -247,7 +245,7 @@ sub new {
 
     croak('core_class must create an object of the Navel::Base::Daemon::Core class') unless blessed($self->{core}) && $self->{core}->isa('Navel::Base::Daemon::Core');
 
-    if ($options{enable_webservices} && @{$self->{webservices}->{definitions}}) {
+    if (ref $options{webservice_listeners} eq 'ARRAY' && @{$options{webservice_listeners}}) {
         $load_class_error = try_require_namespace($options{mojolicious_application_class});
 
         croak($load_class_error) if $load_class_error;
@@ -262,7 +260,7 @@ sub new {
                 %options,
                 daemon => $self,
             ),
-            listen => $self->{webservices}->all_by_property_name('url')
+            listen => $options{webservice_listeners}
         );
     }
 
@@ -278,11 +276,11 @@ sub webserver {
 
     eval {
         if ($action) {
-            $self->{core}->{logger}->notice('starting the webservices.');
+            $self->{core}->{logger}->notice('starting the webservice.');
 
             $self->{webserver}->silent(1)->start();
         } else {
-            $self->{core}->{logger}->notice('stopping the webservices.');
+            $self->{core}->{logger}->notice('stopping the webservice.');
 
             $self->{webserver}->stop();
         }
@@ -301,9 +299,9 @@ sub start {
     if ($self->webserver()) {
         local $@;
 
-        for (keys %{$self->{core}->{meta}->{definition}->{webservices}->{mojo_server}}) {
+        for (keys %{$self->{core}->{meta}->{definition}->{webservice}->{mojo_server}}) {
             eval {
-                $self->{webserver}->$_($self->{core}->{meta}->{definition}->{webservices}->{mojo_server}->{$_});
+                $self->{webserver}->$_($self->{core}->{meta}->{definition}->{webservice}->{mojo_server}->{$_});
             };
 
             $self->{core}->{logger}->crit(Navel::Logger::Message->stepped_message($@))->flush_queue() if $@;
