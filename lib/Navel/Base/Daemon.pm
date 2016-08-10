@@ -13,6 +13,8 @@ use Getopt::Long::Descriptive;
 
 use Sys::Hostname;
 
+use IO::AIO;
+
 use Navel::Logger;
 use Navel::Logger::Message;
 use Navel::Utils qw/
@@ -167,6 +169,8 @@ sub run {
                 work_dir => $options->daemonize_chdir(),
                 pid_file => $options->daemonize_pid_file()
             );
+
+            IO::AIO::reinit();
         };
 
         unless ($@) {

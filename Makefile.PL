@@ -37,7 +37,8 @@ WriteMakefile(
         'Getopt::Long::Descriptive' => 0,
         'Sys::Hostname' => 0,
         'Mojolicious' => 0,
-        'AnyEvent' => 0
+        'AnyEvent' => 0,
+        'IO::AIO' => 0
     },
     CONFIGURE_REQUIRES => {
         'ExtUtils::MakeMaker' => 6.64
