@@ -14,6 +14,8 @@ use parent qw/
     Navel::Base::Definition::Parser::Writer
 /;
 
+use JSON::Validator;
+
 use Navel::Base::Definition;
 
 #-> methods
@@ -28,12 +30,19 @@ sub new {
 }
 
 sub validate {
-    my ($class, %options) = @_;
+    my ($class, $raw_definition) = @_;
 
-    Navel::Base::Definition->validate(
-        definition_class => __PACKAGE__,
-        validator => $options{validator},
-        raw_definition => $options{raw_definition}
+    Navel::Base::Definition::validate(
+        $class,
+        raw_definition => $raw_definition,
+        validator => sub {
+            state $json_validator = JSON::Validator->new()->schema(
+                Navel::API::Swagger2::Scheduler->new()->expand()->api_spec()->get('/definitions/publisher')
+            );
+
+            $json_validator->validate(shift);
+        },
+        definition_class => $class
     );
 }
 
