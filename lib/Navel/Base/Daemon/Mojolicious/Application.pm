@@ -56,7 +56,7 @@ sub new {
 
             my $userinfo = $controller->req()->url()->to_abs()->userinfo();
 
-            unless (secure_compare(defined $userinfo ? $userinfo : '', $self->daemon()->{core}->{meta}->{definition}->{webservice}->{credentials}->{login} . ':' . $self->daemon()->{core}->{meta}->{definition}->{webservice}->{credentials}->{password})) {
+            unless (secure_compare($userinfo // '', $self->daemon()->{core}->{meta}->{definition}->{webservice}->{credentials}->{login} . ':' . $self->daemon()->{core}->{meta}->{definition}->{webservice}->{credentials}->{password})) {
                 $controller->res()->headers()->www_authenticate('Basic');
 
                 $controller->render(
@@ -82,7 +82,7 @@ sub new {
 
             my (@ok, @ko);
 
-            my $template = defined $arguments->{template} ? $arguments->{template} : '';
+            my $template = $arguments->{template} // '';
 
             if ($template eq 'exception') {
                 my $exception_message = $controller->stash('exception')->message();
