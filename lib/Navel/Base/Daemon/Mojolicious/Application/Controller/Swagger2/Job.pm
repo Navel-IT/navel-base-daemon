@@ -33,19 +33,9 @@ my $action_on_job_by_type_and_name = sub {
 
     my (@ok, @ko);
 
-    if ($jobAction eq 'enable') {
-        $job->{enabled} = 1;
+    $job->$jobAction();
 
-        push @ok, $job->full_name() . ': enabled.';
-    } elsif ($jobAction eq 'disable') {
-        $job->{enabled} = 0;
-
-        push @ok, $job->full_name() . ': disabled.';
-    } elsif ($jobAction eq 'execute') {
-        $job->exec();
-
-        push @ok, $job->full_name() . ': force execution.';
-    }
+    push @ok, $job->full_name() . ': ' . $jobAction . '.';
 
     $controller->$callback(
         $controller->ok_ko(\@ok, \@ko),
@@ -135,7 +125,7 @@ sub disable_job_by_type_and_name {
 sub execute_job_by_type_and_name {
     $action_on_job_by_type_and_name->(
         @_,
-        'execute'
+        'exec'
     );
 }
 
