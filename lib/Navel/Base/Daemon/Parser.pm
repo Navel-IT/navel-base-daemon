@@ -28,11 +28,9 @@ sub new {
 }
 
 sub validate {
-    my ($class, %options) = @_;
-
     Navel::Base::Definition::validate(
-        $class,
-        %options
+        shift,
+        @_
     );
 }
 
