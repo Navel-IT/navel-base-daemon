@@ -56,15 +56,13 @@ sub read {
     $self;
 }
 
-sub write {
+sub async_write {
     my $self = shift;
 
-    $self->SUPER::write(
+    $self->SUPER::async_write(
         definitions => $self->{definition},
         @_
     );
-
-    $self;
 }
 
 # sub AUTOLOAD {}
