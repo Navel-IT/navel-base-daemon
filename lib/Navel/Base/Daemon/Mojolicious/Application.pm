@@ -50,31 +50,9 @@ sub new {
         }
     );
 
-    my $authenticated = $self->routes()->under(
-        sub {
-            my $controller = shift;
+    my $routes = $self->routes();
 
-            my $userinfo = $controller->req()->url()->to_abs()->userinfo();
-
-            unless (secure_compare($userinfo // '', $self->daemon()->{core}->{meta}->{definition}->{webservice}->{credentials}->{login} . ':' . $self->daemon()->{core}->{meta}->{definition}->{webservice}->{credentials}->{password})) {
-                $controller->res()->headers()->www_authenticate('Basic');
-
-                $controller->render(
-                    json => $controller->ok_ko(
-                        [],
-                        [
-                            'unauthorized: access is denied due to invalid credentials.'
-                        ]
-                    ),
-                    status => 401
-                );
-
-                return undef;
-            }
-        }
-    );
-
-    $authenticated->websocket('/api/logger/stream')->to('WebSocket::CoreLogger#stream');
+    $routes->websocket('/api/logger/stream')->to('WebSocket::CoreLogger#stream');
 
     $self->hook(
         before_render => sub {
@@ -108,7 +86,7 @@ sub new {
     $self->plugin(
         'Mojolicious::Plugin::Swagger2' => {
             swagger => $options{swagger},
-            route => $authenticated
+            route => $routes
         }
     );
 
