@@ -9,6 +9,8 @@ package Navel::Base::Daemon::Mojolicious::Application 0.1;
 
 use Navel::Base;
 
+use Mojo::JSON::MaybeXS;
+
 use Mojo::Base 'Mojolicious';
 
 use Mojo::Util 'secure_compare';
@@ -91,8 +93,6 @@ sub new {
     );
 
     $self->plugin('Navel::Mojolicious::Plugin::Swagger2::StdResponses');
-
-    $self->plugin('Navel::Mojolicious::Plugin::JSON::XS');
 
     $self->plugin('Navel::Mojolicious::Plugin::Logger',
         {
