@@ -37,6 +37,7 @@ WriteMakefile(
         'Getopt::Long::Descriptive' => 0,
         'Sys::Hostname' => 0,
         'Mojolicious' => 0,
+        'Mojo::JSON::MaybeXS' => 0,
         'AnyEvent' => 0,
         'IO::AIO' => 0,
         'Promises' => 0
