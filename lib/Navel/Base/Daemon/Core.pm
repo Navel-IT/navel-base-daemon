@@ -46,20 +46,66 @@ sub register_core_logger {
         singleton => 1,
         interval => 0.5,
         on_disabled => sub {
-            $self->{logger}->clear_queue()
+            $self->{logger}->{queue}->dequeue();
         },
         callback => sub {
             my $timer = shift->begin();
 
             $_->($self->{logger}) for values %{$self->{logger_callbacks}};
 
-            $self->{logger}->flush_queue(
+            $self->{logger}->flush_messages(
                 async => 1
             );
 
             $timer->end();
         }
     );
+
+    $self;
+}
+
+sub job_type_exists {
+    my ($self, $type) = @_;
+
+    croak('a job type must be defined') unless defined $type;
+
+    exists $self->{job_types}->{$type};
+}
+
+sub pool_matching_job_type {
+    my ($self, $type) = @_;
+
+    croak('incorrect job type') unless $self->job_type_exists($type);
+
+    $self->{job_types}->{$type};
+}
+
+sub jobs_by_type {
+    my ($self, $type) = @_;
+
+    croak('a job type must be defined') unless defined $type;
+
+    $self->pool_matching_job_type($type)->timers();
+}
+
+sub job_by_type_and_name {
+    my ($self, $type, $name) = @_;
+
+    croak('a job type and name must be defined') unless defined $type && defined $name;
+
+    for (@{$self->jobs_by_type($type)}) {
+        return $_ if $_->{name} eq $name;
+    }
+
+    undef;
+}
+
+sub unregister_job_by_type_and_name {
+    my $self = shift;
+
+    my $job = $self->job_by_type_and_name(@_);
+
+    $job->DESTROY() if defined $job;
 
     $self;
 }
