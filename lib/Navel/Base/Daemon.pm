@@ -162,7 +162,7 @@ sub run {
     $options{before_daemonization}->($class, $options, $logger) if ref $options{before_daemonization} eq 'CODE';
 
     if ($options->daemonize() && ! $options->validate_configuration()) {
-        $logger->info('daemonizing.')->flush_queue();
+        $logger->info('daemonizing.')->flush_messages();
 
         eval {
             daemonize(
@@ -176,7 +176,7 @@ sub run {
         unless ($@) {
             $logger->{service_pid} = $$;
 
-            $logger->info('daemon successfully started.')->flush_queue();
+            $logger->info('daemon successfully started.')->flush_messages();
         } else {
             $logger->emerg(
                 Navel::Logger::Message->stepped_message('error while daemonizing.',
@@ -184,7 +184,7 @@ sub run {
                         $@
                     ]
                 )
-            )->flush_queue();
+            )->flush_messages();
 
             exit 1;
         }
@@ -199,27 +199,27 @@ sub run {
     };
 
     if ($@) {
-        $logger->emerg(Navel::Logger::Message->stepped_message($@))->flush_queue();
+        $logger->emerg(Navel::Logger::Message->stepped_message($@))->flush_messages();
 
         exit 1;
     }
 
     if ($options->validate_configuration()) {
-        $logger->notice('configuration is valid.')->flush_queue();
+        $logger->notice('configuration is valid.')->flush_messages();
 
         exit 0;
     }
 
     $options{before_starting}->($daemon, $options) if ref $options{before_starting} eq 'CODE';
 
-    $logger->notice('initialization done.')->flush_queue();
+    $logger->notice('initialization done.')->flush_messages();
 
     eval {
         $daemon->start();
     };
 
     if ($@) {
-        $logger->emerg(Navel::Logger::Message->stepped_message($@))->flush_queue();
+        $logger->emerg(Navel::Logger::Message->stepped_message($@))->flush_messages();
 
         exit 1;
     }
@@ -292,7 +292,7 @@ sub webserver {
 
     $self->{core}->{logger}->crit(Navel::Logger::Message->stepped_message($@)) if $@;
 
-    $self->{core}->{logger}->flush_queue();
+    $self->{core}->{logger}->flush_messages();
 
     $self;
 }
@@ -308,7 +308,7 @@ sub start {
                 $self->{webserver}->$_($self->{core}->{meta}->{definition}->{webservice}->{mojo_server}->{$_});
             };
 
-            $self->{core}->{logger}->crit(Navel::Logger::Message->stepped_message($@))->flush_queue() if $@;
+            $self->{core}->{logger}->crit(Navel::Logger::Message->stepped_message($@))->flush_messages() if $@;
         }
 
         $self->webserver(1);

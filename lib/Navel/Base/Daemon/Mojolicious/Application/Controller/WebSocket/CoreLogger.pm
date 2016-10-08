@@ -25,7 +25,7 @@ sub stream {
             {
                 json => $_->constructor_properties()
             }
-        ) for @{shift->{queue}};
+        ) for @{shift->{queue}->{items}};
     };
 
     $controller->on(
