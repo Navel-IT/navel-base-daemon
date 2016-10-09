@@ -300,19 +300,7 @@ sub webserver {
 sub start {
     my $self = shift;
 
-    if ($self->webserver()) {
-        local $@;
-
-        for (keys %{$self->{core}->{meta}->{definition}->{webservice}->{mojo_server}}) {
-            eval {
-                $self->{webserver}->$_($self->{core}->{meta}->{definition}->{webservice}->{mojo_server}->{$_});
-            };
-
-            $self->{core}->{logger}->crit(Navel::Logger::Message->stepped_message($@))->flush_messages() if $@;
-        }
-
-        $self->webserver(1);
-    }
+    $self->webserver(1) if $self->webserver();
 
     $self;
 }
