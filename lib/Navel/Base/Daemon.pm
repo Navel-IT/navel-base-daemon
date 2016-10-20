@@ -223,6 +223,8 @@ sub run {
 
         exit 1;
     }
+
+    exit;
 }
 
 sub new {
