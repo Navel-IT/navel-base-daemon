@@ -17,7 +17,7 @@ my $min_perl_version = '5.18.0';
 WriteMakefile(
     NAME => 'Navel::Base::Daemon',
     VERSION_FROM => 'lib/Navel/Base/Daemon.pm',
-    ABSTRACT => 'navel-anyevent-pool',
+    ABSTRACT => 'navel-base-daemon',
     AUTHOR => 'Yoann Le Garff, Nicolas Boquet and Yann Le Bras',
     LICENSE => 'Apache License, Version 2.0',
     META_MERGE => {
