@@ -37,7 +37,7 @@ sub new {
 }
 
 sub register_core_logger {
-    my ($self, $job_name) = (shift, 0);
+    my ($self, $job_name) = (shift, 'core');
 
     $self->unregister_job_by_type_and_name('logger', $job_name);
 
