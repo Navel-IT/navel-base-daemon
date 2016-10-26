@@ -20,9 +20,9 @@ my $action_on_job_by_type_and_name = sub {
         {
             callback => $callback
         }
-    ) unless $controller->daemon()->{core}->job_type_exists($arguments->{jobType});
+    ) unless $controller->daemon->{core}->job_type_exists($arguments->{jobType});
 
-    my $job = $controller->daemon()->{core}->job_by_type_and_name($arguments->{jobType}, $arguments->{jobName});
+    my $job = $controller->daemon->{core}->job_by_type_and_name($arguments->{jobType}, $arguments->{jobName});
 
     return $controller->resource_not_found(
         {
@@ -33,9 +33,9 @@ my $action_on_job_by_type_and_name = sub {
 
     my (@ok, @ko);
 
-    $job->$jobAction();
+    $job->$jobAction;
 
-    push @ok, $job->full_name() . ': ' . $jobAction . '.';
+    push @ok, $job->full_name . ': ' . $jobAction . '.';
 
     $controller->$callback(
         $controller->ok_ko(\@ok, \@ko),
@@ -48,7 +48,7 @@ sub list_job_types {
 
     $controller->$callback(
         [
-            keys %{$controller->daemon()->{core}->{job_types}}
+            keys %{$controller->daemon->{core}->{job_types}}
         ],
         200
     );
@@ -61,13 +61,13 @@ sub list_jobs_by_type {
         {
             callback => $callback
         }
-    ) unless $controller->daemon()->{core}->job_type_exists($arguments->{jobType});
+    ) unless $controller->daemon->{core}->job_type_exists($arguments->{jobType});
 
     $controller->$callback(
         [
             map {
                 $_->{name}
-            } @{$controller->daemon()->{core}->jobs_by_type($arguments->{jobType})}
+            } @{$controller->daemon->{core}->jobs_by_type($arguments->{jobType})}
         ],
         200
     );
@@ -80,9 +80,9 @@ sub show_job_by_type_and_name {
         {
             callback => $callback
         }
-    ) unless $controller->daemon()->{core}->job_type_exists($arguments->{jobType});
+    ) unless $controller->daemon->{core}->job_type_exists($arguments->{jobType});
 
-    my $job = $controller->daemon()->{core}->job_by_type_and_name($arguments->{jobType}, $arguments->{jobName});
+    my $job = $controller->daemon->{core}->job_by_type_and_name($arguments->{jobType}, $arguments->{jobName});
 
     return $controller->resource_not_found(
         {

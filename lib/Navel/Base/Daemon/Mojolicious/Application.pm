@@ -30,7 +30,7 @@ sub new {
 
     croak('swagger option must be of Navel::Base::API::Swagger2 class') unless blessed($options{swagger}) && $options{swagger}->isa('Swagger2');
 
-    my $self = $class->SUPER::new();
+    my $self = $class->SUPER::new;
 
     $self->secrets(rand);
 
@@ -40,19 +40,19 @@ sub new {
         }
     );
 
-    $self->log()->level('debug')->unsubscribe('message')->on(
+    $self->log->level('debug')->unsubscribe('message')->on(
         message => sub {
             my ($log, $level, @lines) = @_;
 
             my $method = $level eq 'debug' ? $level : 'info';
 
-            $self->daemon()->{core}->{logger}->$method(
+            $self->daemon->{core}->{logger}->$method(
                 Navel::Logger::Message->stepped_message('Mojolicious:', \@lines)
             );
         }
     );
 
-    my $routes = $self->routes();
+    my $routes = $self->routes;
 
     $routes->websocket('/api/logger/stream')->to('WebSocket::CoreLogger#stream');
 
@@ -65,11 +65,11 @@ sub new {
             my $template = $arguments->{template} // '';
 
             if ($template eq 'exception') {
-                my $exception_message = $controller->stash('exception')->message();
+                my $exception_message = $controller->stash('exception')->message;
 
                 push @ko, $exception_message;
 
-                $controller->daemon()->{core}->{logger}->err(
+                $controller->daemon->{core}->{logger}->err(
                     Navel::Logger::Message->stepped_message(\@ko)
                 );
             } elsif ($template eq 'not_found') {
@@ -96,7 +96,7 @@ sub new {
 
     $self->plugin('Navel::Mojolicious::Plugin::Logger',
         {
-            logger => $self->daemon()->{core}->{logger}
+            logger => $self->daemon->{core}->{logger}
         }
     );
 

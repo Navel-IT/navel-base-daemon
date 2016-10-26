@@ -28,9 +28,9 @@ sub new {
         logger => $options{logger},
         logger_callbacks => {},
         job_types => {
-            logger => Navel::AnyEvent::Pool->new()
+            logger => Navel::AnyEvent::Pool->new
         },
-        ae_condvar => AnyEvent->condvar()
+        ae_condvar => AnyEvent->condvar
     };
 
     bless $self, ref $class || $class;
@@ -46,10 +46,10 @@ sub register_core_logger {
         singleton => 1,
         interval => 0.5,
         on_disabled => sub {
-            $self->{logger}->{queue}->dequeue();
+            $self->{logger}->{queue}->dequeue;
         },
         callback => sub {
-            my $timer = shift->begin();
+            my $timer = shift->begin;
 
             $_->($self->{logger}) for values %{$self->{logger_callbacks}};
 
@@ -57,7 +57,7 @@ sub register_core_logger {
                 async => 1
             );
 
-            $timer->end();
+            $timer->end;
         }
     );
 
@@ -85,7 +85,7 @@ sub jobs_by_type {
 
     croak('a job type must be defined') unless defined $type;
 
-    $self->pool_matching_job_type($type)->timers();
+    $self->pool_matching_job_type($type)->timers;
 }
 
 sub job_by_type_and_name {
@@ -105,7 +105,7 @@ sub unregister_job_by_type_and_name {
 
     my $job = $self->job_by_type_and_name(@_);
 
-    $job->DESTROY() if defined $job;
+    $job->DESTROY if defined $job;
 
     $self;
 }
@@ -113,7 +113,7 @@ sub unregister_job_by_type_and_name {
 sub recv {
     my $self = shift;
 
-    $self->{ae_condvar}->recv();
+    $self->{ae_condvar}->recv;
 
     $self;
 }
@@ -121,7 +121,7 @@ sub recv {
 sub send {
     my $self = shift;
 
-    $self->{ae_condvar}->send();
+    $self->{ae_condvar}->send;
 
     $self;
 }

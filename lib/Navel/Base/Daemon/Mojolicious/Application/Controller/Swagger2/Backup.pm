@@ -18,7 +18,7 @@ use Promises 'collect';
 sub save_all_configuration {
     my ($controller, $arguments, $callback) = splice @_, 0, 3;
 
-    $controller->render_later();
+    $controller->render_later;
 
     my (@ok, @ko);
 

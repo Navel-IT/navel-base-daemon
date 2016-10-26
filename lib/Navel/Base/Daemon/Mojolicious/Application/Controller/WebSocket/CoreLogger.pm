@@ -16,21 +16,21 @@ use Mojo::Base 'Mojolicious::Controller';
 sub stream {
     my $controller = shift;
 
-    my $tx = $controller->tx();
+    my $tx = $controller->tx;
 
     my $tx_id = sprintf '%s', $tx;
 
-    $controller->daemon()->{core}->{logger_callbacks}->{$tx_id} = sub {
+    $controller->daemon->{core}->{logger_callbacks}->{$tx_id} = sub {
         $tx->send(
             {
-                json => $_->constructor_properties()
+                json => $_->constructor_properties
             }
         ) for @{shift->{queue}->{items}};
     };
 
     $controller->on(
         finish => sub {
-            delete $controller->daemon()->{core}->{logger_callbacks}->{$tx_id};
+            delete $controller->daemon->{core}->{logger_callbacks}->{$tx_id};
         }
     );
 }

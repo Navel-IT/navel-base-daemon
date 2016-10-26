@@ -29,7 +29,7 @@ use Navel::Utils qw/
 #->
 
 sub Getopt::Long::Descriptive::Usage::exit {
-    print shift->text();
+    print shift->text;
 
     exit shift;
 }
@@ -118,10 +118,10 @@ sub run {
         @describe_options
     );
 
-    $usage->exit(0) if $options->help();
+    $usage->exit(0) if $options->help;
 
-    if ($options->version()) {
-        say $class->VERSION();
+    if ($options->version) {
+        say $class->VERSION;
 
         exit 0;
     }
@@ -138,16 +138,16 @@ sub run {
 
     my $logger = eval {
         Navel::Logger->new(
-            datetime_format => $options->log_datetime_format(),
+            datetime_format => $options->log_datetime_format,
             hostname => eval {
-                hostname();
+                hostname;
             },
             service => $options{program_name},
-            facility => $options->log_facility(),
-            severity => $options->log_severity(),
-            colored => ! $options->log_no_color(),
-            syslog => $options->log_to_syslog(),
-            file_path => $options->log_file_path()
+            facility => $options->log_facility,
+            severity => $options->log_severity,
+            colored => ! $options->log_no_color,
+            syslog => $options->log_to_syslog,
+            file_path => $options->log_file_path
         );
     };
 
@@ -159,24 +159,22 @@ sub run {
         $usage->exit(1);
     }
 
-    $options{before_daemonization}->($class, $options, $logger) if ref $options{before_daemonization} eq 'CODE';
-
-    if ($options->daemonize() && ! $options->validate_configuration()) {
-        $logger->info('daemonizing.')->flush_messages();
+    if ($options->daemonize && ! $options->validate_configuration) {
+        $logger->info('daemonizing.')->flush_messages;
 
         eval {
             daemonize(
-                work_dir => $options->daemonize_chdir(),
-                pid_file => $options->daemonize_pid_file()
+                work_dir => $options->daemonize_chdir,
+                pid_file => $options->daemonize_pid_file
             );
 
-            IO::AIO::reinit();
+            IO::AIO::reinit;
         };
 
         unless ($@) {
             $logger->{service_pid} = $$;
 
-            $logger->info('daemon successfully started.')->flush_messages();
+            $logger->info('daemon successfully started.')->flush_messages;
         } else {
             $logger->emerg(
                 Navel::Logger::Message->stepped_message('error while daemonizing.',
@@ -184,7 +182,7 @@ sub run {
                         $@
                     ]
                 )
-            )->flush_messages();
+            )->flush_messages;
 
             exit 1;
         }
@@ -194,32 +192,32 @@ sub run {
         $class->new(
             logger => $logger,
             meta_configuration_file_path => $meta_configuration_file_path,
-            webservice_listeners => $options->webservice_listener()
+            webservice_listeners => $options->webservice_listener
         );
     };
 
     if ($@) {
-        $logger->emerg(Navel::Logger::Message->stepped_message($@))->flush_messages();
+        $logger->emerg(Navel::Logger::Message->stepped_message($@))->flush_messages;
 
         exit 1;
     }
 
-    if ($options->validate_configuration()) {
-        $logger->notice('configuration is valid.')->flush_messages();
+    if ($options->validate_configuration) {
+        $logger->notice('configuration is valid.')->flush_messages;
 
         exit 0;
     }
 
-    $options{before_starting}->($daemon, $options) if ref $options{before_starting} eq 'CODE';
+    $options{before_starting}->($daemon) if ref $options{before_starting} eq 'CODE';
 
-    $logger->notice('initialization done.')->flush_messages();
+    $logger->notice('initialization done.')->flush_messages;
 
     eval {
-        $daemon->start();
+        $daemon->start;
     };
 
     if ($@) {
-        $logger->emerg(Navel::Logger::Message->stepped_message($@))->flush_messages();
+        $logger->emerg(Navel::Logger::Message->stepped_message($@))->flush_messages;
 
         exit 1;
     }
@@ -256,10 +254,10 @@ sub new {
 
         croak($load_class_error) if $load_class_error;
 
-        $options{mojolicious_application_class}->import();
+        $options{mojolicious_application_class}->import;
 
         require Mojo::Server::Daemon;
-        Mojo::Server::Daemon->import();
+        Mojo::Server::Daemon->import;
 
         $self->{webserver} = Mojo::Server::Daemon->new(
             app => $options{mojolicious_application_class}->new(
@@ -284,17 +282,17 @@ sub webserver {
         if ($action) {
             $self->{core}->{logger}->notice('starting the webservice.');
 
-            $self->{webserver}->silent(1)->start();
+            $self->{webserver}->silent(1)->start;
         } else {
             $self->{core}->{logger}->notice('stopping the webservice.');
 
-            $self->{webserver}->stop();
+            $self->{webserver}->stop;
         }
     };
 
     $self->{core}->{logger}->crit(Navel::Logger::Message->stepped_message($@)) if $@;
 
-    $self->{core}->{logger}->flush_messages();
+    $self->{core}->{logger}->flush_messages;
 
     $self;
 }
@@ -302,7 +300,7 @@ sub webserver {
 sub start {
     my $self = shift;
 
-    $self->webserver(1) if $self->webserver();
+    $self->webserver(1) if $self->webserver;
 
     $self;
 }

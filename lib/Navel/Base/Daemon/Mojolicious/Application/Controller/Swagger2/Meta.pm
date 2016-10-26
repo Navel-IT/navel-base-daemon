@@ -17,7 +17,7 @@ sub show_meta {
     my ($controller, $arguments, $callback) = @_;
 
     $controller->$callback(
-        $controller->daemon()->{core}->{meta}->{definition},
+        $controller->daemon->{core}->{meta}->{definition},
         200
     );
 }

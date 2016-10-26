@@ -18,7 +18,7 @@ sub show_status {
 
     $controller->$callback(
         {
-            version => $controller->daemon()->VERSION()
+            version => $controller->daemon->VERSION
         },
         200
     );
