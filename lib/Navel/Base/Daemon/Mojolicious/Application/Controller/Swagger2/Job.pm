@@ -95,6 +95,7 @@ sub show_job_by_type_and_name {
 
     $job_properties{name} = $arguments->{jobName};
     $job_properties{type} = $arguments->{jobType};
+    $job_properties{backend} = ref $job;
 
     $job_properties{$_} = $job->{$_} for qw/
         enabled
