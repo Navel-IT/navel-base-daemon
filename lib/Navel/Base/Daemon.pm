@@ -249,7 +249,7 @@ sub new {
 
     croak('core_class must create an object of the Navel::Base::Daemon::Core class') unless blessed($self->{core}) && $self->{core}->isa('Navel::Base::Daemon::Core');
 
-    if (ref $options{webservice_listeners} eq 'ARRAY' && @{$options{webservice_listeners}}) {
+    if (defined $options{mojolicious_application_class} && ref $options{webservice_listeners} eq 'ARRAY' && @{$options{webservice_listeners}}) {
         $load_class_error = try_require_namespace($options{mojolicious_application_class});
 
         croak($load_class_error) if $load_class_error;
