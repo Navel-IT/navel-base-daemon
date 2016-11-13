@@ -26,9 +26,9 @@ use Navel::Utils qw/
 sub new {
     my ($class, %options) = @_;
 
-    croak('daemon option must be of Navel::Base::Daemon class') unless blessed($options{daemon}) && $options{daemon}->isa('Navel::Base::Daemon');
+    croak('daemon must be of Navel::Base::Daemon class') unless blessed($options{daemon}) && $options{daemon}->isa('Navel::Base::Daemon');
 
-    croak('swagger option must be of Navel::Base::API::Swagger2 class') unless blessed($options{swagger}) && $options{swagger}->isa('Swagger2');
+    croak('swagger must be of Navel::Base::API::Swagger2 class') unless blessed($options{swagger}) && $options{swagger}->isa('Swagger2');
 
     my $self = $class->SUPER::new;
 

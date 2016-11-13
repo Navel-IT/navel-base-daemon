@@ -8,6 +8,7 @@
 package Navel::Base::Daemon::Core 0.1;
 
 use AnyEvent;
+use EV;
 
 use Navel::Utils qw/
     croak
@@ -19,9 +20,9 @@ use Navel::Utils qw/
 sub new {
     my ($class, %options) = @_;
 
-    croak('meta option must be an object of the Navel::Base::Daemon::Parser class') unless blessed($options{meta}) && $options{meta}->isa('Navel::Base::Daemon::Parser');
+    croak('meta must be of the Navel::Base::Daemon::Parser class') unless blessed($options{meta}) && $options{meta}->isa('Navel::Base::Daemon::Parser');
 
-    croak('logger option must be an object of the Navel::Logger class') unless blessed($options{logger}) && $options{logger}->isa('Navel::Logger');
+    croak('logger must be of the Navel::Logger class') unless blessed($options{logger}) && $options{logger}->isa('Navel::Logger');
 
     my $self = {
         meta => $options{meta},
@@ -67,7 +68,7 @@ sub register_core_logger {
 sub job_type_exists {
     my ($self, $type) = @_;
 
-    croak('a job type must be defined') unless defined $type;
+    croak('type must be defined') unless defined $type;
 
     exists $self->{job_types}->{$type};
 }
@@ -75,7 +76,7 @@ sub job_type_exists {
 sub pool_matching_job_type {
     my ($self, $type) = @_;
 
-    croak('incorrect job type') unless $self->job_type_exists($type);
+    croak('incorrect type') unless $self->job_type_exists($type);
 
     $self->{job_types}->{$type};
 }
@@ -83,7 +84,7 @@ sub pool_matching_job_type {
 sub jobs_by_type {
     my ($self, $type) = @_;
 
-    croak('a job type must be defined') unless defined $type;
+    croak('type must be defined') unless defined $type;
 
     $self->pool_matching_job_type($type)->timers;
 }
@@ -91,7 +92,7 @@ sub jobs_by_type {
 sub job_by_type_and_name {
     my ($self, $type, $name) = @_;
 
-    croak('a job type and name must be defined') unless defined $type && defined $name;
+    croak('type and name must be defined') unless defined $type && defined $name;
 
     for (@{$self->jobs_by_type($type)}) {
         return $_ if $_->{name} eq $name;
