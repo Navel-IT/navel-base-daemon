@@ -228,7 +228,7 @@ sub run {
 sub new {
     my ($class, %options) = @_;
 
-    croak('meta option must be an object of the Navel::Base::Daemon::Parser class') unless blessed($options{meta}) && $options{meta}->isa('Navel::Base::Daemon::Parser');
+    croak('meta must be of the Navel::Base::Daemon::Parser class') unless blessed($options{meta}) && $options{meta}->isa('Navel::Base::Daemon::Parser');
 
     die "meta_configuration_file_path is missing\n" unless defined $options{meta_configuration_file_path};
 
@@ -266,6 +266,11 @@ sub new {
             ),
             listen => $options{webservice_listeners}
         );
+
+        if (defined $options{mojolicious_application_home_directory}) {
+            @{$self->{webserver}->app->renderer->paths} = ($options{mojolicious_application_home_directory} . '/templates');
+            @{$self->{webserver}->app->static->paths} = ($options{mojolicious_application_home_directory} . '/public');
+        }
     }
 
     $self;
@@ -301,6 +306,8 @@ sub start {
     my $self = shift;
 
     $self->webserver(1) if $self->webserver;
+
+    $self->{core}->register_core_logger;
 
     $self;
 }

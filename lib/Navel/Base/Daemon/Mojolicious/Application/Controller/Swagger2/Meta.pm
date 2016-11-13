@@ -13,7 +13,7 @@ use Mojo::Base 'Mojolicious::Controller';
 
 #-> methods
 
-sub show_meta {
+sub show {
     my ($controller, $arguments, $callback) = @_;
 
     $controller->$callback(

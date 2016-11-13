@@ -13,29 +13,29 @@ use Mojo::Base 'Mojolicious::Controller';
 
 #-> methods
 
-my $action_on_job_by_type_and_name = sub {
-    my ($controller, $arguments, $callback, $jobAction) = @_;
+my $action_by_type_and_name = sub {
+    my ($controller, $arguments, $callback, $action) = @_;
 
     return $controller->resource_not_found(
         {
             callback => $callback
         }
-    ) unless $controller->daemon->{core}->job_type_exists($arguments->{jobType});
+    ) unless $controller->daemon->{core}->job_type_exists($arguments->{type});
 
-    my $job = $controller->daemon->{core}->job_by_type_and_name($arguments->{jobType}, $arguments->{jobName});
+    my $job = $controller->daemon->{core}->job_by_type_and_name($arguments->{type}, $arguments->{name});
 
     return $controller->resource_not_found(
         {
             callback => $callback,
-            resource_name => $arguments->{jobName}
+            resource_name => $arguments->{name}
         }
     ) unless defined $job;
 
     my (@ok, @ko);
 
-    $job->$jobAction;
+    $job->$action;
 
-    push @ok, $job->full_name . ': ' . $jobAction . '.';
+    push @ok, $job->full_name . ': ' . $action . '.';
 
     $controller->$callback(
         $controller->ok_ko(\@ok, \@ko),
@@ -43,7 +43,7 @@ my $action_on_job_by_type_and_name = sub {
     );
 };
 
-sub list_job_types {
+sub list_types {
     my ($controller, $arguments, $callback) = @_;
 
     $controller->$callback(
@@ -54,47 +54,47 @@ sub list_job_types {
     );
 }
 
-sub list_jobs_by_type {
+sub list_by_type {
     my ($controller, $arguments, $callback) = @_;
 
     return $controller->resource_not_found(
         {
             callback => $callback
         }
-    ) unless $controller->daemon->{core}->job_type_exists($arguments->{jobType});
+    ) unless $controller->daemon->{core}->job_type_exists($arguments->{type});
 
     $controller->$callback(
         [
             map {
                 $_->{name}
-            } @{$controller->daemon->{core}->jobs_by_type($arguments->{jobType})}
+            } @{$controller->daemon->{core}->jobs_by_type($arguments->{type})}
         ],
         200
     );
 }
 
-sub show_job_by_type_and_name {
+sub show_by_type_and_name {
     my ($controller, $arguments, $callback) = @_;
 
     return $controller->resource_not_found(
         {
             callback => $callback
         }
-    ) unless $controller->daemon->{core}->job_type_exists($arguments->{jobType});
+    ) unless $controller->daemon->{core}->job_type_exists($arguments->{type});
 
-    my $job = $controller->daemon->{core}->job_by_type_and_name($arguments->{jobType}, $arguments->{jobName});
+    my $job = $controller->daemon->{core}->job_by_type_and_name($arguments->{type}, $arguments->{name});
 
     return $controller->resource_not_found(
         {
             callback => $callback,
-            resource_name => $arguments->{jobName}
+            resource_name => $arguments->{name}
         }
     ) unless defined $job;
 
     my %job_properties;
 
-    $job_properties{name} = $arguments->{jobName};
-    $job_properties{type} = $arguments->{jobType};
+    $job_properties{name} = $arguments->{name};
+    $job_properties{type} = $arguments->{type};
     $job_properties{backend} = ref $job;
 
     $job_properties{$_} = $job->{$_} for qw/
@@ -109,22 +109,22 @@ sub show_job_by_type_and_name {
     );
 }
 
-sub enable_job_by_type_and_name {
-    $action_on_job_by_type_and_name->(
+sub enable_by_type_and_name {
+    $action_by_type_and_name->(
         @_,
         'enable'
     );
 }
 
-sub disable_job_by_type_and_name {
-    $action_on_job_by_type_and_name->(
+sub disable_by_type_and_name {
+    $action_by_type_and_name->(
         @_,
         'disable'
     );
 }
 
-sub execute_job_by_type_and_name {
-    $action_on_job_by_type_and_name->(
+sub execute_by_type_and_name {
+    $action_by_type_and_name->(
         @_,
         'exec'
     );
