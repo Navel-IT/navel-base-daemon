@@ -94,7 +94,7 @@ sub run {
         ],
         [],
         [
-            'webservice-listener=s@',
+            'webservice-listeners=s@',
             'one or more locations to listen on',
             {
                 default => []
@@ -192,7 +192,7 @@ sub run {
         $class->new(
             logger => $logger,
             meta_configuration_file_path => $meta_configuration_file_path,
-            webservice_listeners => $options->webservice_listener
+            webservice_listeners => $options->webservice_listeners
         );
     };
 
