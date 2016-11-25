@@ -5,7 +5,7 @@
 
 #-> initialization
 
-package Navel::Base::Daemon::Mojolicious::Application::Controller::Swagger2::Product 0.1;
+package Navel::Base::Daemon::Mojolicious::Application::Controller::OpenAPI::Meta 0.1;
 
 use Navel::Base;
 
@@ -13,14 +13,12 @@ use Mojo::Base 'Mojolicious::Controller';
 
 #-> methods
 
-sub show_status {
-    my ($controller, $arguments, $callback) = @_;
+sub show {
+    my $controller = shift->openapi->valid_input || return;
 
-    $controller->$callback(
-        {
-            version => $controller->daemon->VERSION
-        },
-        200
+    $controller->render(
+        openapi => $controller->daemon->{core}->{meta}->{definition},
+        status => 200
     );
 }
 
@@ -40,7 +38,7 @@ __END__
 
 =head1 NAME
 
-Navel::Base::Daemon::Mojolicious::Application::Controller::Swagger2::Product
+Navel::Base::Daemon::Mojolicious::Application::Controller::OpenAPI::Meta
 
 =head1 COPYRIGHT
 

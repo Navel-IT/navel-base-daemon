@@ -28,7 +28,7 @@ sub new {
 
     croak('daemon must be of Navel::Base::Daemon class') unless blessed($options{daemon}) && $options{daemon}->isa('Navel::Base::Daemon');
 
-    croak('swagger must be of Navel::Base::API::Swagger2 class') unless blessed($options{swagger}) && $options{swagger}->isa('Swagger2');
+    croak('openapi_url must be defined') unless defined $options{openapi_url};
 
     my $self = $class->SUPER::new;
 
@@ -86,13 +86,14 @@ sub new {
     );
 
     $self->plugin(
-        'Mojolicious::Plugin::Swagger2' => {
-            swagger => $options{swagger},
-            route => $routes
+        'Mojolicious::Plugin::OpenAPI' => {
+            url => $options{openapi_url},
+            route => $routes,
+            coerce => {} # empty hash is for "coerce nothing"
         }
     );
 
-    $self->plugin('Navel::Mojolicious::Plugin::Swagger2::StdResponses');
+    $self->plugin('Navel::Mojolicious::Plugin::OpenAPI::StdResponses');
 
     $self->plugin('Navel::Mojolicious::Plugin::Logger',
         {

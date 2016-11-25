@@ -5,7 +5,7 @@
 
 #-> initialization
 
-package Navel::Base::Daemon::Mojolicious::Application::Controller::Swagger2::Backup 0.1;
+package Navel::Base::Daemon::Mojolicious::Application::Controller::OpenAPI::Configuration 0.1;
 
 use Navel::Base;
 
@@ -15,8 +15,8 @@ use Promises 'collect';
 
 #-> methods
 
-sub save_all_configuration {
-    my ($controller, $arguments, $callback) = splice @_, 0, 3;
+sub save {
+    my $controller = shift->openapi->valid_input || return;
 
     $controller->render_later;
 
@@ -34,9 +34,9 @@ sub save_all_configuration {
         }
     )->finally(
         sub {
-            $controller->$callback(
-                $controller->ok_ko(\@ok, \@ko),
-                @ko ? 500 : 200
+            $controller->render(
+                openapi => $controller->ok_ko(\@ok, \@ko),
+                status => @ko ? 500 : 200
             );
         }
     );
@@ -58,7 +58,7 @@ __END__
 
 =head1 NAME
 
-Navel::Base::Daemon::Mojolicious::Application::Controller::Swagger2::Backup
+Navel::Base::Daemon::Mojolicious::Application::Controller::OpenAPI::Configuration
 
 =head1 COPYRIGHT
 
