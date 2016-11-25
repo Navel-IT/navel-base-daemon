@@ -40,17 +40,17 @@ sub new {
         }
     );
 
-    my %log_level_mapping = (
-        debug => 'debug',
-        info => 'info',
-        warn => 'warning',
-        error => 'err',
-        fatal => 'emerg'
-    );
-
     $self->log->level('debug')->unsubscribe('message')->on(
         message => sub {
             my ($log, $level, @lines) = @_;
+
+            state %log_level_mapping = (
+                debug => 'debug',
+                info => 'info',
+                warn => 'warning',
+                error => 'err',
+                fatal => 'emerg'
+            );
 
             $level = $log_level_mapping{$level} // 'info';
 
