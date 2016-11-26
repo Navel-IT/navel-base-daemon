@@ -44,15 +44,15 @@ sub new {
         message => sub {
             my ($log, $level, @lines) = @_;
 
-            state %log_level_mapping = (
+            state $log_level_mapping = {
                 debug => 'debug',
                 info => 'info',
                 warn => 'warning',
                 error => 'err',
                 fatal => 'emerg'
-            );
+            };
 
-            $level = $log_level_mapping{$level} // 'info';
+            $level = $log_level_mapping->{$level} // 'info';
 
             $self->daemon->{core}->{logger}->$level(
                 Navel::Logger::Message->stepped_message('Mojolicious:', \@lines)
