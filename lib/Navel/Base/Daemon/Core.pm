@@ -27,7 +27,6 @@ sub new {
     my $self = {
         meta => $options{meta},
         logger => $options{logger},
-        logger_callbacks => {},
         job_types => {
             logger => Navel::AnyEvent::Pool->new
         },
@@ -51,8 +50,6 @@ sub register_core_logger {
         },
         callback => sub {
             my $timer = shift->begin;
-
-            $_->($self->{logger}) for values %{$self->{logger_callbacks}};
 
             $self->{logger}->flush_messages(
                 async => 1

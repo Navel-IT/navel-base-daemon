@@ -62,8 +62,6 @@ sub new {
 
     my $routes = $self->routes;
 
-    $routes->websocket('/api/logger/stream')->to('WebSocket::CoreLogger#stream');
-
     $self->hook(
         before_render => sub {
             my ($controller, $arguments) = @_;
