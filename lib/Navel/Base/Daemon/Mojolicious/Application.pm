@@ -71,9 +71,7 @@ sub new {
             my $template = $arguments->{template} // '';
 
             if ($template eq 'exception') {
-                my $exception_message = $controller->stash('exception')->message;
-
-                push @ko, $exception_message;
+                push @ko, $controller->stash('exception')->message;
 
                 $controller->daemon->{core}->{logger}->err(
                     Navel::Logger::Message->stepped_message(\@ko)
@@ -95,7 +93,7 @@ sub new {
         'Mojolicious::Plugin::OpenAPI' => {
             url => $options{openapi_url},
             route => $routes,
-            coerce => {} # empty hash is for "coerce nothing"
+            coerce => {} # empty hashtable is for 'coerce nothing'
         }
     );
 
