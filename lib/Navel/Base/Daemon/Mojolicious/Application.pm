@@ -97,7 +97,7 @@ sub new {
         }
     );
 
-    $self->plugin('Navel::Mojolicious::Plugin::OpenAPI::StdResponses');
+    $self->plugin('Navel::Mojolicious::Plugin::API::StdResponses');
 
     $self->plugin('Navel::Mojolicious::Plugin::Logger',
         {
