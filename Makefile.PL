@@ -34,6 +34,8 @@ WriteMakefile(
         'Navel::Base' => 0,
         'Navel::Base::Definition' => 0,
         'Navel::Logger' => 0,
+        'Navel::Mojolicious::Plugin::Logger' => 0,
+        'Navel::Mojolicious::Plugin::API::StdResponses' => 0,
         'Getopt::Long::Descriptive' => 0,
         'Sys::Hostname' => 0,
         'Mojolicious' => 0,
