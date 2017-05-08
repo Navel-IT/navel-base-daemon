@@ -90,7 +90,7 @@ sub new {
     );
 
     $self->plugin(
-        'Mojolicious::Plugin::OpenAPI' => {
+        'OpenAPI' => {
             url => $options{openapi_url},
             route => $routes,
             coerce => {} # empty hashtable is for 'coerce nothing'
