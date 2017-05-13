@@ -90,7 +90,7 @@ sub new {
     );
 
     $self->plugin(
-        'OpenAPI' => {
+        OpenAPI => {
             url => $options{openapi_url},
             route => $routes,
             coerce => {} # empty hashtable is for 'coerce nothing'

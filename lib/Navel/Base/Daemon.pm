@@ -134,8 +134,6 @@ sub run {
         $usage->exit(1);
     }
 
-    local $@;
-
     my $logger = eval {
         Navel::Logger->new(
             datetime_format => $options->log_datetime_format,
@@ -280,8 +278,6 @@ sub webserver {
     my ($self, $action) = @_;
 
     return blessed($self->{webserver}) && $self->{webserver}->isa('Mojo::Server::Daemon') unless defined $action;
-
-    local $@;
 
     eval {
         if ($action) {
