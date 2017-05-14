@@ -35,7 +35,7 @@ sub save {
     )->finally(
         sub {
             $controller->render(
-                openapi => $controller->ok_ko(\@ok, \@ko),
+                openapi => $controller->navel->logger->ok(\@ok, \@ko),
                 status => @ko ? 500 : 200
             );
         }

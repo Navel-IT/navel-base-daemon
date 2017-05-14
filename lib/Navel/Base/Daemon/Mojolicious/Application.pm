@@ -35,7 +35,7 @@ sub new {
     $self->secrets(rand);
 
     $self->helper(
-        daemon => sub {
+        'navel.daemon' => sub {
             $options{daemon};
         }
     );
