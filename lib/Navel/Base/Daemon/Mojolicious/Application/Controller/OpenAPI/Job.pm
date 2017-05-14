@@ -37,7 +37,7 @@ my $action_by_type_and_name = sub {
     push @ok, $job->full_name . ': ' . $action . '.';
 
     $controller->render(
-        openapi => $controller->navel->logger->ok(\@ok, \@ko),
+        openapi => $controller->navel->logger->ok_ko(\@ok, \@ko),
         status => 200
     );
 };
