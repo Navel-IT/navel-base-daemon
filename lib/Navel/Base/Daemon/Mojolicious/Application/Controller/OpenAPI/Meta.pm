@@ -17,7 +17,7 @@ sub show {
     my $controller = shift->openapi->valid_input || return;
 
     $controller->render(
-        openapi => $controller->daemon->{core}->{meta}->{definition},
+        openapi => $controller->navel->daemon->{core}->{meta}->{definition},
         status => 200
     );
 }

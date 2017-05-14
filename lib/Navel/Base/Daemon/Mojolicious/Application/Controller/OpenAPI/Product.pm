@@ -18,7 +18,7 @@ sub show_status {
 
     $controller->render(
         openapi => {
-            version => $controller->daemon->VERSION
+            version => $controller->navel->daemon->VERSION
         },
         status => 200
     );

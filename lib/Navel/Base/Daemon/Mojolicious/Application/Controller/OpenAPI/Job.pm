@@ -24,9 +24,9 @@ my $action_by_type_and_name = sub {
         $controller->validation->param('name')
     );
 
-    return $controller->navel->api->responses->resource_not_found unless $controller->daemon->{core}->job_type_exists($type);
+    return $controller->navel->api->responses->resource_not_found unless $controller->navel->daemon->{core}->job_type_exists($type);
 
-    my $job = $controller->daemon->{core}->job_by_type_and_name($type, $name);
+    my $job = $controller->navel->daemon->{core}->job_by_type_and_name($type, $name);
 
     return $controller->navel->api->responses->resource_not_found($name) unless defined $job;
 
@@ -47,7 +47,7 @@ sub list_types {
 
     $controller->render(
         openapi => [
-            keys %{$controller->daemon->{core}->{job_types}}
+            keys %{$controller->navel->daemon->{core}->{job_types}}
         ],
         status => 200
     );
@@ -58,13 +58,13 @@ sub list_by_type {
 
     my $type = $controller->validation->param('type');
 
-    return $controller->navel->api->responses->resource_not_found unless $controller->daemon->{core}->job_type_exists($type);
+    return $controller->navel->api->responses->resource_not_found unless $controller->navel->daemon->{core}->job_type_exists($type);
 
     $controller->render(
         openapi => [
             map {
                 $_->{name}
-            } @{$controller->daemon->{core}->jobs_by_type($type)}
+            } @{$controller->navel->daemon->{core}->jobs_by_type($type)}
         ],
         status => 200
     );
@@ -78,9 +78,9 @@ sub show_by_type_and_name {
         type => $controller->validation->param('type')
     );
 
-    return $controller->navel->api->responses->resource_not_found unless $controller->daemon->{core}->job_type_exists($job_properties{type});
+    return $controller->navel->api->responses->resource_not_found unless $controller->navel->daemon->{core}->job_type_exists($job_properties{type});
 
-    my $job = $controller->daemon->{core}->job_by_type_and_name($job_properties{type}, $job_properties{name});
+    my $job = $controller->navel->daemon->{core}->job_by_type_and_name($job_properties{type}, $job_properties{name});
 
     return $controller->navel->api->responses->resource_not_found($job_properties{name}) unless defined $job;
 

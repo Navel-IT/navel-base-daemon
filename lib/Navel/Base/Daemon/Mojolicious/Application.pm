@@ -54,7 +54,7 @@ sub new {
 
             $level = $log_level_mapping->{$level} // 'info';
 
-            $self->daemon->{core}->{logger}->$level(
+            $self->navel->daemon->{core}->{logger}->$level(
                 Navel::Logger::Message->stepped_message('Mojolicious:', \@lines)
             );
         }
@@ -73,7 +73,7 @@ sub new {
             if ($template eq 'exception') {
                 push @ko, $controller->stash('exception')->message;
 
-                $controller->daemon->{core}->{logger}->err(
+                $controller->navel->daemon->{core}->{logger}->err(
                     Navel::Logger::Message->stepped_message(\@ko)
                 );
             } elsif ($template eq 'not_found') {
@@ -90,7 +90,14 @@ sub new {
         OpenAPI => {
             url => $options{openapi_url},
             route => $routes,
-            coerce => {} # empty hashtable is for 'coerce nothing'
+            coerce => {}, # empty hashtable is for 'coerce nothing'
+            renderer => sub {
+                my ($controller, $data) = @_;
+
+                $data = $controller->navel->api->definitions->ok_ko([], $data->{errors}) if ref $data eq 'HASH' && ref $data->{errors} eq 'ARRAY';
+
+                Mojolicious::Plugin::OpenAPI::_render_json($controller, $data);
+            }
         }
     );
 
@@ -98,7 +105,7 @@ sub new {
 
     $self->plugin('Navel::Mojolicious::Plugin::Logger',
         {
-            logger => $self->daemon->{core}->{logger}
+            logger => $self->navel->daemon->{core}->{logger}
         }
     );
 
