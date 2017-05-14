@@ -82,10 +82,7 @@ sub new {
                 return;
             }
 
-            $arguments->{json} = {
-                ok => \@ok,
-                ko => \@ko
-            };
+            $arguments->{json} = $controller->navel->logger->ok_ko(\@ok, \@ko);
         }
     );
 
