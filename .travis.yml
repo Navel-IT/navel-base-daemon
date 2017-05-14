@@ -20,8 +20,8 @@ before_install:
   - f_install_navel_dep navel-queue
   - f_install_navel_dep navel-logger
   - f_install_navel_dep navel-api
-  - f_install_navel_dep navel-mojolicious-plugin-logger
   - f_install_navel_dep navel-mojolicious-plugin-api-stdresponses
+  - f_install_navel_dep navel-mojolicious-plugin-logger
   - popd
   - cpanm --quiet --notest Devel::Cover::Report::Coveralls
 after_success:

@@ -24,11 +24,11 @@ my $action_by_type_and_name = sub {
         $controller->validation->param('name')
     );
 
-    return $controller->navel->stdresponses->resource_not_found unless $controller->daemon->{core}->job_type_exists($type);
+    return $controller->navel->api->responses->resource_not_found unless $controller->daemon->{core}->job_type_exists($type);
 
     my $job = $controller->daemon->{core}->job_by_type_and_name($type, $name);
 
-    return $controller->navel->stdresponses->resource_not_found($name) unless defined $job;
+    return $controller->navel->api->responses->resource_not_found($name) unless defined $job;
 
     my (@ok, @ko);
 
@@ -58,7 +58,7 @@ sub list_by_type {
 
     my $type = $controller->validation->param('type');
 
-    return $controller->navel->stdresponses->resource_not_found unless $controller->daemon->{core}->job_type_exists($type);
+    return $controller->navel->api->responses->resource_not_found unless $controller->daemon->{core}->job_type_exists($type);
 
     $controller->render(
         openapi => [
@@ -78,11 +78,11 @@ sub show_by_type_and_name {
         type => $controller->validation->param('type')
     );
 
-    return $controller->navel->stdresponses->resource_not_found unless $controller->daemon->{core}->job_type_exists($job_properties{type});
+    return $controller->navel->api->responses->resource_not_found unless $controller->daemon->{core}->job_type_exists($job_properties{type});
 
     my $job = $controller->daemon->{core}->job_by_type_and_name($job_properties{type}, $job_properties{name});
 
-    return $controller->navel->stdresponses->resource_not_found($job_properties{name}) unless defined $job;
+    return $controller->navel->api->responses->resource_not_found($job_properties{name}) unless defined $job;
 
     $job_properties{backend} = ref $job;
 
